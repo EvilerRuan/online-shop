@@ -1,0 +1,11 @@
+node_modules
+dist
+.wrkz
+.wrangler
+.env
+.env.local
+.env.production
+.dev.vars
+*.log
+.DS_Store
+.vite

@@ -1,0 +1,20 @@
+{
+  "name": "online-shop",
+  "version": "1.0.0",
+  "private": true,
+  "description": "线上批发商城 H5 系统",
+  "scripts": {
+    "dev:h5": "pnpm --filter h5 dev",
+    "dev:admin": "pnpm --filter admin dev",
+    "dev:api": "pnpm --filter api dev",
+    "build:h5": "pnpm --filter h5 build",
+    "build:admin": "pnpm --filter admin build",
+    "build:api": "pnpm --filter api build",
+    "deploy:api": "pnpm --filter api deploy",
+    "typecheck": "pnpm -r typecheck"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  }
+}
