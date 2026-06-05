@@ -7,7 +7,7 @@ port = 8787
 
 [vars]
 SUPABASE_URL = "https://zremusafurpmyhjhldze.supabase.co"
-SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpyZW11c2FmdXJwbXloamhsZHplIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyODQ1NTIsImV4cCI6MjA5NTg2MDU1Mn0.6nOZfxmxlR7VEr09INMu8ghholPJljVjmXWVfiSG8ZU"
+SUPABASE_ANON_KEY = "sb_publishable_eIn4ktgnRqr-vfHOblPtjw_3vuYn9au"
 
 # Secrets (set via wrangler secret put):
 # SUPABASE_SERVICE_ROLE_KEY
