@@ -75,6 +75,7 @@ export default function OrderDetail() {
   }, [fetchOrder])
 
   const handleShip = () => {
+    if (!order) return
     Modal.confirm({
       title: '确认发货',
       icon: null,
@@ -146,6 +147,7 @@ export default function OrderDetail() {
   }
 
   const handleMarkPaid = () => {
+    if (!order) return
     Modal.confirm({
       title: '确认标记为已付款',
       icon: null,
