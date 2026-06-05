@@ -175,7 +175,7 @@ function onTabChange() {
   onLoad()
 }
 
-function goPay() {
+function goPay(order: OrderItem) {
   showToast('请微信联系付款转账！')
 }
 
