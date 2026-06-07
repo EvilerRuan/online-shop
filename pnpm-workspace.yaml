@@ -3,3 +3,8 @@ packages:
   - 'admin'
   - 'api'
   - 'shared'
+allowBuilds:
+  esbuild: false
+  sharp: false
+  vue-demi: false
+  workerd: false

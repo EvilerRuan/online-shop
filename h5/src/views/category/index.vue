@@ -17,6 +17,13 @@
       <!-- 左侧一级分类 -->
       <div class="page-category__sidebar">
         <div
+          class="page-category__sidebar-item"
+          :class="{ 'page-category__sidebar-item--active': activeId === 0 }"
+          @click="handleAllCategoriesClick"
+        >
+          全部分类
+        </div>
+        <div
           v-for="cat in categories"
           :key="cat.id"
           class="page-category__sidebar-item"
@@ -92,6 +99,14 @@ async function fetchCategories() {
   } catch (err: any) {
     showToast(err.message || '加载分类失败')
   }
+}
+
+function handleAllCategoriesClick() {
+  activeId.value = 0
+  router.push({
+    path: '/products',
+    query: { category_name: '全部商品' },
+  })
 }
 
 function handleCategoryClick(cat: CategoryTreeNode) {
