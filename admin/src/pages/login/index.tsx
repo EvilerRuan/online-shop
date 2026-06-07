@@ -41,7 +41,7 @@ export default function LoginPage() {
         style={{ width: 400, boxShadow: '0 2px 8px rgba(0,0,0,0.09)' }}
       >
         <Typography.Title level={3} style={{ textAlign: 'center', marginBottom: 32 }}>
-          贝贝优品百货 - 管理后台登录
+          贝壳优品百货 - 管理后台登录
         </Typography.Title>
         <Form<LoginForm>
           name="login"

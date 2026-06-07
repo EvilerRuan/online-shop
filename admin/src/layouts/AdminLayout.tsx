@@ -54,7 +54,7 @@ export default function AdminLayout() {
         }}
       >
         <Typography.Title level={4} style={{ margin: 0 }}>
-          贝贝优品百货
+          贝壳优品百货
         </Typography.Title>
         <Space>
           <span>{user?.username}</span>

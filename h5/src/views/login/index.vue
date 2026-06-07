@@ -2,7 +2,7 @@
   <div class="page-login">
     <div class="page-login__header">
       <div class="page-login__logo">🛒</div>
-      <h1 class="page-login__title">贝贝优品百货</h1>
+      <h1 class="page-login__title">贝壳优品百货</h1>
     </div>
 
     <div class="page-login__form">
