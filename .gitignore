@@ -4,7 +4,6 @@ dist
 .wrangler
 .env
 .env.local
-.env.production
 .env.development
 .dev.vars
 *.log
@@ -12,5 +11,4 @@ dist
 .vite
 .pnpm
 .pnpm-store
-public/
 dev-local.ts
