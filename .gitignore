@@ -5,7 +5,12 @@ dist
 .env
 .env.local
 .env.production
+.env.development
 .dev.vars
 *.log
 .DS_Store
 .vite
+.pnpm
+.pnpm-store
+public/
+dev-local.ts

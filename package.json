@@ -11,7 +11,7 @@
     "build:h5": "pnpm --filter h5 build",
     "build:admin": "pnpm --filter admin build",
     "build:api": "pnpm --filter api build",
-    "deploy:api": "pnpm --filter api deploy",
+    "deploy:api": "pnpm --filter api run deploy",
     "typecheck": "pnpm -r typecheck"
   },
   "engines": {
