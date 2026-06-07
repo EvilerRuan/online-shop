@@ -1,0 +1,10 @@
+packages:
+  - 'h5'
+  - 'admin'
+  - 'api'
+  - 'shared'
+allowBuilds:
+  esbuild: false
+  sharp: false
+  vue-demi: false
+  workerd: false

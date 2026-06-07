@@ -1,0 +1,13 @@
+name = "online-shop-api"
+main = "src/index.ts"
+compatibility_date = "2024-05-01"
+
+[dev]
+port = 8787
+
+[vars]
+SUPABASE_URL = "https://zremusafurpmyhjhldze.supabase.co"
+SUPABASE_ANON_KEY = "sb_publishable_eIn4ktgnRqr-vfHOblPtjw_3vuYn9au"
+
+# Secrets (set via wrangler secret put):
+# SUPABASE_SERVICE_ROLE_KEY

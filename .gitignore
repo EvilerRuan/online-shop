@@ -1,0 +1,18 @@
+node_modules
+dist
+.wrkz
+.wrangler
+.env
+.env.local
+.env.development
+.dev.vars
+*.log
+.DS_Store
+Thumbs.db
+.vite
+.pnpm
+.pnpm-store
+dev-local.ts
+
+# auto-generated type declarations
+h5/components.d.ts
