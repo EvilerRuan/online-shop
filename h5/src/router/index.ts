@@ -89,10 +89,6 @@ const routes: RouteRecordRaw[] = [
     name: 'StaticPage',
     component: () => import('@/views/static-page/index.vue'),
   },
-  {
-    path: '/',
-    redirect: '/home',
-  },
 ]
 
 const router = createRouter({
@@ -103,11 +99,38 @@ const router = createRouter({
 router.beforeEach((to, _from, next) => {
   const authStore = useAuthStore()
 
+  console.log('[Router Guard]', {
+    path: to.path,
+    requiresAuth: !!to.meta.requiresAuth,
+    isLoggedIn: authStore.isLoggedIn,
+    hasSession: !!authStore.session,
+  })
+
+  // 未登录访问需要认证的页面，跳转到登录页
   if (to.meta.requiresAuth && !authStore.isLoggedIn) {
     next({ path: '/login', query: { redirect: to.fullPath } })
-  } else {
-    next()
+    return
   }
+
+  // 未登录访问根路径，跳转到登录页
+  if (to.path === '/' && !authStore.isLoggedIn) {
+    next({ path: '/login', query: { redirect: '/home' } })
+    return
+  }
+
+  // 已登录访问根路径，跳转到首页
+  if (to.path === '/' && authStore.isLoggedIn) {
+    next({ path: '/home' })
+    return
+  }
+
+  // 已登录访问登录页，跳转到首页
+  if (to.path === '/login' && authStore.isLoggedIn) {
+    next({ path: '/home' })
+    return
+  }
+
+  next()
 })
 
 export default router
