@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Button, Card, Form, Input, Modal, Select, Space, Table, Tag, message } from 'antd'
+import { Button, Card, Form, Input, Modal, Select, Space, Table, Tabs, Tag, message } from 'antd'
 import { SearchOutlined, ReloadOutlined, CheckOutlined, UploadOutlined } from '@ant-design/icons'
 import type { ColumnsType } from 'antd/es/table'
 import { useNavigate } from 'react-router-dom'
@@ -14,12 +14,19 @@ interface OrderListRow {
   order_no: string
   user_phone: string
   total_amount: number
+  shipping_fee: number
   status: OrderStatus
   status_text: string
   item_count: number
   product_images: (string | null)[]
   created_at: string
 }
+
+const channelTabItems = [
+  { key: '', label: '全部' },
+  { key: 'wholesale', label: '批发' },
+  { key: 'retail', label: '零售' },
+]
 
 const statusOptions: { label: string; value: OrderStatus | '' }[] = [
   { label: '全部', value: '' },
@@ -39,6 +46,7 @@ export default function OrderList() {
   const [total, setTotal] = useState(0)
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
+  const [channel, setChannel] = useState('')
 
   const fetchOrders = useCallback(() => {
     setLoading(true)
@@ -51,6 +59,7 @@ export default function OrderList() {
           order_no: values.order_no || undefined,
           user_phone: values.user_phone || undefined,
           status: values.status || undefined,
+          channel: channel || undefined,
         },
       })
       .then((res) => {
@@ -59,7 +68,7 @@ export default function OrderList() {
       })
       .catch(() => {})
       .finally(() => setLoading(false))
-  }, [form, page, pageSize])
+  }, [form, page, pageSize, channel])
 
   useEffect(() => {
     fetchOrders()
@@ -72,6 +81,11 @@ export default function OrderList() {
 
   const handleReset = () => {
     form.resetFields()
+    setPage(1)
+  }
+
+  const handleChannelChange = (key: string) => {
+    setChannel(key)
     setPage(1)
   }
 
@@ -306,6 +320,14 @@ export default function OrderList() {
       render: (val: number) => formatPrice(val),
     },
     {
+      title: '运费',
+      dataIndex: 'shipping_fee',
+      key: 'shipping_fee',
+      width: 90,
+      align: 'right',
+      render: (val: number) => (val ? `¥${val.toFixed(2)}` : '免运费'),
+    },
+    {
       title: '订单状态',
       dataIndex: 'status',
       key: 'status',
@@ -348,6 +370,12 @@ export default function OrderList() {
 
   return (
     <div>
+      <Tabs
+        activeKey={channel}
+        onChange={handleChannelChange}
+        items={channelTabItems}
+        style={{ marginBottom: 16 }}
+      />
       <Card style={{ marginBottom: 16 }}>
         <Form form={form} layout="inline">
           <Form.Item name="order_no" label="订单号">

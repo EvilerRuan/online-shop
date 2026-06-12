@@ -1,4 +1,5 @@
 import type { OrderStatus } from '../constants/order-status'
+import type { Channel } from '../constants/channel'
 
 export interface Order {
   id: number
@@ -11,6 +12,9 @@ export interface Order {
   recipient_phone: string
   address: string
   shipping_no: string | null
+  // 零售扩展字段
+  channel: Channel
+  shipping_fee: number
   created_at: string
   updated_at: string
 }
@@ -43,6 +47,9 @@ export interface OrderListItem {
   status_text: string
   item_count: number
   product_images: (string | null)[]
+  // 零售扩展字段
+  channel?: Channel
+  shipping_fee?: number
   created_at: string
 }
 

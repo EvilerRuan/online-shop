@@ -1,3 +1,5 @@
+import type { SalesChannel } from '../constants/channel'
+
 export interface Product {
   id: number
   name: string
@@ -11,6 +13,9 @@ export interface Product {
   min_order_qty: number
   sales_count: number
   status: 'active' | 'inactive'
+  // 零售扩展字段
+  retail_price: number
+  sales_channel: SalesChannel
   created_at: string
   updated_at: string
 }
@@ -53,6 +58,9 @@ export interface CreateProductRequest {
   stock: number
   min_order_qty: number
   skus: { sku_name: string; quantity: number }[]
+  // 零售扩展字段
+  retail_price?: number
+  sales_channel?: SalesChannel
 }
 
 // 编辑商品请求
@@ -66,4 +74,7 @@ export interface UpdateProductRequest {
   stock: number
   min_order_qty: number
   skus: { sku_name: string; quantity: number }[]
+  // 零售扩展字段
+  retail_price?: number
+  sales_channel?: SalesChannel
 }

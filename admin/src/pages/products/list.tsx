@@ -28,6 +28,7 @@ interface ProductListRow {
   main_image: string | null
   category_path: string
   price: number
+  retail_price: number | null
   stock: number
   sales_count: number
   status: 'active' | 'inactive'
@@ -67,6 +68,7 @@ export default function ProductList() {
           name: values.name || undefined,
           category_id: values.category_id || undefined,
           status: values.status || undefined,
+          sales_channel: values.sales_channel || undefined,
         },
       })
       .then((res) => {
@@ -170,6 +172,13 @@ export default function ProductList() {
       render: (price: number) => formatPrice(price),
     },
     {
+      title: '零售价',
+      dataIndex: 'retail_price',
+      key: 'retail_price',
+      width: 100,
+      render: (val: number | null) => (val ? `¥${val.toFixed(2)}` : '-'),
+    },
+    {
       title: '库存',
       dataIndex: 'stock',
       key: 'stock',
@@ -239,6 +248,12 @@ export default function ProductList() {
             <Select placeholder="请选择状态" allowClear style={{ width: 120 }}>
               <Select.Option value="active">上架</Select.Option>
               <Select.Option value="inactive">下架</Select.Option>
+            </Select>
+          </Form.Item>
+          <Form.Item name="sales_channel" label="零售渠道">
+            <Select placeholder="请选择渠道" allowClear style={{ width: 130 }}>
+              <Select.Option value="wholesale">批发</Select.Option>
+              <Select.Option value="retail">零售</Select.Option>
             </Select>
           </Form.Item>
           <Form.Item>

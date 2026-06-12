@@ -12,6 +12,17 @@ import UserManage from './pages/users'
 import HomeConfig from './pages/home-config'
 import SystemSettings from './pages/settings'
 import SpecNames from './pages/spec-names'
+// 零售管理页面
+import ShippingFees from './pages/shipping-fees'
+import PointsConfig from './pages/points/config'
+import PointsProducts from './pages/points/products'
+import PointsRedeems from './pages/points/redeems'
+import PointsLedger from './pages/points/ledger'
+import AfterSalesList from './pages/after-sales'
+import AfterSalesDetail from './pages/after-sales/detail'
+import CustomerService from './pages/customer-service'
+import RetailUsers from './pages/retail-users'
+import RetailHomeConfig from './pages/retail-home-config'
 
 export default function App() {
   return (
@@ -36,6 +47,17 @@ export default function App() {
         <Route path="home-config" element={<HomeConfig />} />
         <Route path="spec-names" element={<SpecNames />} />
         <Route path="settings" element={<SystemSettings />} />
+        {/* 零售管理 */}
+        <Route path="shipping-fees" element={<ShippingFees />} />
+        <Route path="points/config" element={<PointsConfig />} />
+        <Route path="points/products" element={<PointsProducts />} />
+        <Route path="points/redeems" element={<PointsRedeems />} />
+        <Route path="points/ledger" element={<PointsLedger />} />
+        <Route path="after-sales" element={<AfterSalesList />} />
+        <Route path="after-sales/:id" element={<AfterSalesDetail />} />
+        <Route path="customer-service" element={<CustomerService />} />
+        <Route path="retail-users" element={<RetailUsers />} />
+        <Route path="retail-home-config" element={<RetailHomeConfig />} />
       </Route>
       <Route path="/" element={<Navigate to="/admin/login" replace />} />
     </Routes>

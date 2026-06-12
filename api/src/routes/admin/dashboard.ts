@@ -9,25 +9,64 @@ const dashboard = new Hono<Env>()
 
 dashboard.get('/', async (c) => {
   const db = createAdminClient(c.env)
+  const channel = c.req.query('channel') // 'all' | 'wholesale' | 'retail'
+
+  // 构建订单查询（按渠道过滤）
+  const buildOrderQuery = () => {
+    let q = db.from('orders').select('id, order_no, user_id, total_amount, status, channel, created_at')
+    if (channel && channel !== 'all') {
+      q = q.eq('channel', channel)
+    }
+    return q
+  }
+
+  const buildOrderCountQuery = () => {
+    let q = db.from('orders').select('id', { count: 'exact', head: true })
+    if (channel && channel !== 'all') {
+      q = q.eq('channel', channel)
+    }
+    return q
+  }
+
+  const buildTodayAmountQuery = () => {
+    const today = new Date().toISOString().slice(0, 10)
+    let q = db.from('orders').select('total_amount').gte('created_at', today)
+    if (channel && channel !== 'all') {
+      q = q.eq('channel', channel)
+    }
+    return q
+  }
+
+  // 用户查询（按渠道过滤）
+  const buildUserCountQuery = () => {
+    let q = db.from('profiles').select('id', { count: 'exact', head: true }).eq('role', 'user')
+    if (channel && channel !== 'all') {
+      q = q.eq('channel', channel)
+    }
+    return q
+  }
 
   const [userCountRes, productCountRes, orderCountRes, todayAmountRes, recentOrdersRes] =
     await Promise.all([
-      db.from('profiles').select('id', { count: 'exact', head: true }).eq('role', 'user'),
+      buildUserCountQuery(),
       db.from('products').select('id', { count: 'exact', head: true }),
-      db.from('orders').select('id', { count: 'exact', head: true }),
-      (() => {
-        const today = new Date().toISOString().slice(0, 10)
-        return db
-          .from('orders')
-          .select('total_amount')
-          .gte('created_at', today)
-      })(),
-      db
-        .from('orders')
-        .select('id, order_no, user_id, total_amount, status, created_at')
-        .order('created_at', { ascending: false })
-        .limit(5),
+      buildOrderCountQuery(),
+      buildTodayAmountQuery(),
+      buildOrderQuery().order('created_at', { ascending: false }).limit(5),
     ])
+
+  // 零售模式额外查询：待处理售后 + 待回复消息
+  let retailExtra: { pending_after_sales: number; unread_messages: number } | null = null
+  if (channel === 'retail' || channel === 'all') {
+    const [afterSalesRes, messagesRes] = await Promise.all([
+      db.from('after_sales').select('id', { count: 'exact', head: true }).in('status', ['pending', 'processing']),
+      db.from('customer_messages').select('id', { count: 'exact', head: true }).eq('sender_type', 'user').eq('is_read', false),
+    ])
+    retailExtra = {
+      pending_after_sales: afterSalesRes.count ?? 0,
+      unread_messages: messagesRes.count ?? 0,
+    }
+  }
 
   const user_count = userCountRes.count ?? 0
   const product_count = productCountRes.count ?? 0
@@ -63,6 +102,7 @@ dashboard.get('/', async (c) => {
     user_id: string
     total_amount: number
     status: string
+    channel: string
     created_at: string
   }) => ({
     id: o.id,
@@ -70,6 +110,7 @@ dashboard.get('/', async (c) => {
     user_phone: phoneMap[o.user_id] ?? '',
     total_amount: o.total_amount,
     status: o.status,
+    channel: o.channel,
     status_text: ORDER_STATUS_LABEL[o.status as OrderStatus] ?? o.status,
     created_at: o.created_at,
   }))
@@ -80,6 +121,7 @@ dashboard.get('/', async (c) => {
     order_count,
     today_order_amount,
     recent_orders,
+    ...(retailExtra ? retailExtra : {}),
   })
 })
 

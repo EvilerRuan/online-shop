@@ -2,6 +2,7 @@
   "name": "h5",
   "version": "1.0.0",
   "private": true,
+  "description": "批发端 B2B - Vue3 + Vite + Vant H5 商城",
   "type": "module",
   "scripts": {
     "dev": "vite",

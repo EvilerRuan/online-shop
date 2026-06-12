@@ -7,7 +7,7 @@ import { createAdminClient } from '../../utils/supabase'
 
 const users = new Hono<Env>()
 
-// GET / - User list
+// GET / - 批发用户列表（仅 channel=wholesale）
 users.get('/', async (c) => {
   const db = createAdminClient(c.env)
 
@@ -20,6 +20,7 @@ users.get('/', async (c) => {
     .from('profiles')
     .select('*', { count: 'exact' })
     .eq('role', 'user')
+    .eq('channel', 'wholesale')
 
   if (phone) {
     query = query.ilike('phone', `%${phone}%`)
@@ -44,7 +45,7 @@ users.get('/', async (c) => {
   return paginate(c, data ?? [], count ?? 0, page, page_size)
 })
 
-// POST / - Create user
+// POST / - 创建批发用户
 users.post(
   '/',
   zValidator(
@@ -59,18 +60,19 @@ users.post(
     const db = createAdminClient(c.env)
     const body = c.req.valid('json')
 
-    // Check phone uniqueness
+    // 检查手机号唯一性（仅批发渠道）
     const { data: existing } = await db
       .from('profiles')
       .select('id')
       .eq('phone', body.phone)
+      .eq('channel', 'wholesale')
       .maybeSingle()
 
     if (existing) {
       return error(c, 409, '手机号已被注册', 409)
     }
 
-    // Create auth user
+    // 创建 Auth 用户
     const { data: authUser, error: authError } = await db.auth.admin.createUser({
       email: body.phone + '@shop.local',
       password: body.password,
@@ -79,6 +81,7 @@ users.post(
       user_metadata: {
         username: body.username,
         phone: body.phone,
+        channel: 'wholesale',
       },
     })
 
@@ -86,7 +89,7 @@ users.post(
       return error(c, 500, '创建用户失败: ' + (authError?.message ?? '未知错误'))
     }
 
-    // Insert profile with last_password for display
+    // 插入 profile（channel=wholesale）
     const { data: profile, error: profileError } = await db
       .from('profiles')
       .insert({
@@ -95,6 +98,7 @@ users.post(
         phone: body.phone,
         role: 'user',
         status: 'active',
+        channel: 'wholesale',
         last_password: body.password,
       })
       .select('id')
@@ -108,7 +112,7 @@ users.post(
   },
 )
 
-// PATCH /:id/status - Toggle user status
+// PATCH /:id/status - 切换用户状态
 users.patch(
   '/:id/status',
   zValidator(
@@ -135,7 +139,7 @@ users.patch(
   },
 )
 
-// POST /:id/reset-password - Reset password
+// POST /:id/reset-password - 重置密码
 users.post(
   '/:id/reset-password',
   zValidator(
@@ -157,7 +161,7 @@ users.post(
       return error(c, 500, '重置密码失败: ' + updateError.message)
     }
 
-    // Save last_password to profile for display
+    // 保存 last_password 到 profile
     await db
       .from('profiles')
       .update({ last_password: password, updated_at: new Date().toISOString() })

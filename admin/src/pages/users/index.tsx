@@ -9,6 +9,7 @@ import {
   Space,
   Switch,
   Table,
+  Tag,
   message,
   Typography,
 } from 'antd'
@@ -264,6 +265,12 @@ export default function UserManage() {
   return (
     <div>
       <Card style={{ marginBottom: 16 }}>
+        <Space style={{ marginBottom: 12 }}>
+          <Tag color="blue">批发端</Tag>
+          <Typography.Text type="secondary">
+            批发用户由后台添加，登录方式：手机号 + 密码
+          </Typography.Text>
+        </Space>
         <Form form={searchForm} layout="inline">
           <Form.Item name="keyword" label="用户名">
             <Input placeholder="请输入用户名" allowClear style={{ width: 160 }} />
@@ -285,7 +292,7 @@ export default function UserManage() {
       </Card>
 
       <Card
-        title="用户列表"
+        title="批发用户列表"
         extra={
           <Button
             type="primary"
@@ -319,7 +326,7 @@ export default function UserManage() {
       </Card>
 
       <Modal
-        title="添加用户"
+        title="添加批发用户"
         open={addModalOpen}
         onOk={handleAddUser}
         onCancel={() => {

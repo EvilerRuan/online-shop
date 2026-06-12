@@ -2,6 +2,7 @@
   "name": "api",
   "version": "1.0.0",
   "private": true,
+  "description": "API 服务 - Cloudflare Workers + Hono",
   "scripts": {
     "dev": "wrangler dev",
     "dev:local": "tsx dev-local.ts",

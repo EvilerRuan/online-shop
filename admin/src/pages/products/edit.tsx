@@ -34,6 +34,8 @@ interface ProductFormValues {
   name: string
   category_id: number
   price: number
+  retail_price?: number
+  sales_channel?: string
   stock: number
   min_order_qty: number
   description?: string
@@ -78,6 +80,8 @@ export default function ProductEdit() {
           name: detail.name,
           category_id: detail.category_id,
           price: detail.price ?? 0,
+          retail_price: detail.retail_price ?? undefined,
+          sales_channel: detail.sales_channel ?? undefined,
           stock: detail.stock ?? 0,
           min_order_qty: detail.min_order_qty ?? 1,
           description: detail.description,
@@ -189,6 +193,8 @@ export default function ProductEdit() {
         category_id: values.category_id,
         main_image: mainImage,
         price: values.price,
+        retail_price: values.retail_price ?? null,
+        sales_channel: values.sales_channel ?? 'wholesale',
         stock: values.stock,
         min_order_qty: values.min_order_qty ?? 1,
         description: values.description || '',
@@ -278,6 +284,18 @@ export default function ProductEdit() {
             />
           </Form.Item>
           <Form.Item
+            name="retail_price"
+            label="零售价"
+          >
+            <InputNumber
+              min={0}
+              precision={2}
+              placeholder="零售价"
+              style={{ width: 150 }}
+              addonAfter="元"
+            />
+          </Form.Item>
+          <Form.Item
             name="stock"
             label="库存"
             rules={[{ required: true, message: '请输入库存' }]}
@@ -292,6 +310,14 @@ export default function ProductEdit() {
             <InputNumber min={1} precision={0} placeholder="默认1" style={{ width: 150 }} />
           </Form.Item>
         </Space>
+
+        <Form.Item name="sales_channel" label="销售渠道">
+          <Select placeholder="请选择销售渠道" style={{ width: 200 }}>
+            <Select.Option value="wholesale">批发</Select.Option>
+            <Select.Option value="retail">零售</Select.Option>
+            <Select.Option value="all">全部</Select.Option>
+          </Select>
+        </Form.Item>
 
         <Form.Item name="description" label="商品描述">
           <Input.TextArea rows={4} placeholder="请输入商品描述" />

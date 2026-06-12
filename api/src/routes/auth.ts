@@ -12,11 +12,11 @@ const loginSchema = z.object({
   password: z.string().min(1, '密码不能为空'),
 })
 
+// 批发端登录（手机号 + 密码，仅 channel=wholesale）
 auth.post('/login', zValidator('json', loginSchema), async (c) => {
   const { phone, password } = c.req.valid('json')
   const db = createAdminClient(c.env)
 
-  // Supabase auth uses email; our system stores phone as "phone@shop.local"
   const email = `${phone}@shop.local`
   const { data: authData, error: authError } = await db.auth.signInWithPassword({
     email,
@@ -27,15 +27,19 @@ auth.post('/login', zValidator('json', loginSchema), async (c) => {
     return error(c, 401, '手机号或密码错误', 401)
   }
 
-  // Query profile
+  // 查询 profile，验证 channel=wholesale 且 role=user
   const { data: profile, error: profileError } = await db
     .from('profiles')
-    .select('id, user_no, username, phone, role, status')
+    .select('id, user_no, username, phone, role, status, channel')
     .eq('id', authData.user.id)
     .single()
 
   if (profileError || !profile) {
     return error(c, 404, '账号不存在', 404)
+  }
+
+  if (profile.channel !== 'wholesale') {
+    return error(c, 403, '该账号不属于批发端', 403)
   }
 
   if (profile.status === 'disabled') {

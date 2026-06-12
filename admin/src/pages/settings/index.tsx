@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Button, Card, Input, Spin, Tabs, message } from 'antd'
+import { Button, Card, Form, Input, InputNumber, Spin, Tabs, message } from 'antd'
 import request from '@/utils/request'
 import type { ApiResponse } from 'shared/types/api'
 
@@ -7,12 +7,18 @@ interface SettingsData {
   merchant_intro: string
   merchant_notice: string
   buyer_notice: string
+  default_shipping_fee: number
+  default_free_threshold: number
+  customer_service_auto_reply: string
 }
 
 const DEFAULT_SETTINGS: SettingsData = {
   merchant_intro: '',
   merchant_notice: '',
   buyer_notice: '',
+  default_shipping_fee: 0,
+  default_free_threshold: 0,
+  customer_service_auto_reply: '',
 }
 
 function SettingEditor({
@@ -60,6 +66,9 @@ export default function SystemSettings() {
           merchant_intro: data?.merchant_intro ?? '',
           merchant_notice: data?.merchant_notice ?? '',
           buyer_notice: data?.buyer_notice ?? '',
+          default_shipping_fee: data?.default_shipping_fee ?? 0,
+          default_free_threshold: data?.default_free_threshold ?? 0,
+          customer_service_auto_reply: data?.customer_service_auto_reply ?? '',
         })
       })
       .catch(() => {})
@@ -128,6 +137,55 @@ export default function SystemSettings() {
           onSave={handleSave}
           saving={saving}
         />
+      ),
+    },
+    {
+      key: 'retail_config',
+      label: '零售端配置',
+      children: (
+        <Card title="零售端配置">
+          <Form layout="vertical" style={{ maxWidth: 500 }}>
+            <Form.Item label="默认运费">
+              <InputNumber
+                min={0}
+                precision={2}
+                value={settings.default_shipping_fee}
+                onChange={(val) =>
+                  setSettings((prev) => ({ ...prev, default_shipping_fee: val ?? 0 }))
+                }
+                addonAfter="元"
+                style={{ width: '100%' }}
+              />
+            </Form.Item>
+            <Form.Item label="默认包邮门槛">
+              <InputNumber
+                min={0}
+                precision={2}
+                value={settings.default_free_threshold}
+                onChange={(val) =>
+                  setSettings((prev) => ({ ...prev, default_free_threshold: val ?? 0 }))
+                }
+                addonAfter="元"
+                style={{ width: '100%' }}
+              />
+            </Form.Item>
+            <Form.Item label="客服自动回复">
+              <Input.TextArea
+                rows={4}
+                value={settings.customer_service_auto_reply}
+                onChange={(e) =>
+                  setSettings((prev) => ({ ...prev, customer_service_auto_reply: e.target.value }))
+                }
+                placeholder="请输入客服自动回复内容"
+              />
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" loading={saving} onClick={handleSave}>
+                保存
+              </Button>
+            </Form.Item>
+          </Form>
+        </Card>
       ),
     },
   ]

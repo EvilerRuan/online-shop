@@ -9,7 +9,14 @@ import {
   SettingOutlined,
   LogoutOutlined,
   TagsOutlined,
+  CarOutlined,
+  GiftOutlined,
+  ToolOutlined,
+  CustomerServiceOutlined,
+  TeamOutlined,
+  ShopOutlined,
 } from '@ant-design/icons'
+import { useState } from 'react'
 import { Outlet, useNavigate, useLocation } from 'react-router-dom'
 import { useAuthStore } from '@/stores/useAuthStore'
 
@@ -24,6 +31,22 @@ const menuItems = [
   { key: '/admin/users', icon: <UserOutlined />, label: '用户管理' },
   { key: '/admin/home-config', icon: <HomeOutlined />, label: '首页配置' },
   { key: '/admin/settings', icon: <SettingOutlined />, label: '系统设置' },
+  {
+    key: 'retail',
+    icon: <ShopOutlined />,
+    label: '零售管理',
+    children: [
+      { key: '/admin/shipping-fees', icon: <CarOutlined />, label: '运费管理' },
+      { key: '/admin/points/config', icon: <GiftOutlined />, label: '积分配置' },
+      { key: '/admin/points/products', icon: <GiftOutlined />, label: '积分商品' },
+      { key: '/admin/points/redeems', icon: <GiftOutlined />, label: '兑换记录' },
+      { key: '/admin/points/ledger', icon: <GiftOutlined />, label: '积分流水' },
+      { key: '/admin/after-sales', icon: <ToolOutlined />, label: '售后管理' },
+      { key: '/admin/customer-service', icon: <CustomerServiceOutlined />, label: '客服消息' },
+      { key: '/admin/retail-users', icon: <TeamOutlined />, label: '零售用户' },
+      { key: '/admin/retail-home-config', icon: <HomeOutlined />, label: '零售首页配置' },
+    ],
+  },
 ]
 
 export default function AdminLayout() {
@@ -32,9 +55,30 @@ export default function AdminLayout() {
   const user = useAuthStore((s) => s.user)
   const logout = useAuthStore((s) => s.logout)
 
-  const selectedKey = menuItems.find((item) =>
-    location.pathname.startsWith(item.key),
-  )?.key || '/admin/dashboard'
+  const [openKeys, setOpenKeys] = useState<string[]>([])
+
+  // 查找匹配的菜单项（支持子菜单）
+  const selectedKey = (() => {
+    for (const item of menuItems) {
+      if ('children' in item && item.children) {
+        const child = item.children.find((c: any) =>
+          location.pathname.startsWith(c.key),
+        )
+        if (child) return child.key
+      } else if (location.pathname.startsWith(item.key)) {
+        return item.key
+      }
+    }
+    return '/admin/dashboard'
+  })()
+
+  // 自动展开包含当前路由的 SubMenu
+  const retailChildKeys = menuItems
+    .filter((item): item is any => 'children' in item && !!item.children)
+    .flatMap((item) => item.children.map((c: any) => c.key))
+  if (retailChildKeys.includes(selectedKey) && !openKeys.includes('retail')) {
+    setOpenKeys(['retail'])
+  }
 
   const handleLogout = () => {
     logout()
@@ -72,6 +116,8 @@ export default function AdminLayout() {
           <Menu
             mode="inline"
             selectedKeys={[selectedKey]}
+            openKeys={openKeys}
+            onOpenChange={setOpenKeys}
             items={menuItems}
             style={{ height: '100%', borderRight: 0 }}
             onClick={({ key }) => navigate(key)}

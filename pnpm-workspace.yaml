@@ -1,8 +1,15 @@
+# 线上商城系统 Monorepo
+# - h5: 批发端 (B2B H5)
+# - retail-h5: 零售端 (B2C Taro 微信小程序)
+# - admin: 管理后台 (Admin)
+# - api: API 服务 (Cloudflare Workers)
+# - shared: 共享代码 (类型定义、工具函数)
 packages:
-  - 'h5'
-  - 'admin'
-  - 'api'
-  - 'shared'
+  - 'h5'          # 批发端 B2B H5
+  - 'admin'       # 管理后台
+  - 'api'         # API 服务
+  - 'shared'      # 共享代码
+  - 'retail-h5'   # 零售端 B2C Taro 小程序
 allowBuilds:
   esbuild: false
   sharp: false
